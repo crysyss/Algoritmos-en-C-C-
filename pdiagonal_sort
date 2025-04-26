@@ -1,0 +1,82 @@
+#include <stdio.h>
+
+void intercambiar(int *A, int *B);
+void ordenarDiagonalmente(int n, int matriz[n][n]);
+
+int main(void) {
+    int matriz[3][3] = {
+        {1, 9, 2},
+        {8, 3, 7},
+        {4, 6, 5}
+    };
+
+    ordenarDiagonalmente(3, matriz);
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            printf("%d\t", matriz[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+void intercambiar(int *A, int *B) {
+    int temp = *A;
+    *A = *B;
+    *B = temp;
+}
+
+void ordenarDiagonalmente(int n, int matriz[n][n]) {
+    int cambios;
+    do {
+        cambios = 0;
+        for (int k = n - 1; k >= -(n - 1); k--) {
+            int abs_k = (k >= 0) ? k : -k;
+            int len = n - abs_k;
+            if (len > 1) {
+                for (int m = 0; m < len - 1; m++) {
+                    int i1, j1, i2, j2;
+                    if (k >= 0) {
+                        i1 = k + m;
+                        j1 = m;
+                        i2 = k + m + 1;
+                        j2 = m + 1;
+                    } else {
+                        i1 = m;
+                        j1 = m + abs_k;
+                        i2 = m + 1;
+                        j2 = m + 1 + abs_k;
+                    }
+                    if (matriz[i1][j1] > matriz[i2][j2]) {
+                        intercambiar(&matriz[i1][j1], &matriz[i2][j2]);
+                        cambios = 1;
+                    }
+                }
+            }
+            if (k > -(n - 1)) {
+                int next_k = k - 1;
+                int last_i, last_j, first_i, first_j;
+                if (k >= 0) {
+                    last_i = n - 1;
+                    last_j = (n - 1) - k;
+                } else {
+                    last_i = n - 1 + k;
+                    last_j = n - 1;
+                }
+                if (next_k >= 0) {
+                    first_i = next_k;
+                    first_j = 0;
+                } else {
+                    first_i = 0;
+                    first_j = -next_k;
+                }
+                if (matriz[last_i][last_j] > matriz[first_i][first_j]) {
+                    intercambiar(&matriz[last_i][last_j], &matriz[first_i][first_j]);
+                    cambios = 1;
+                }
+            }
+        }
+    } while (cambios);
+}
